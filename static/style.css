@@ -154,7 +154,12 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
 .trip.cheapest { background: var(--green); border-color: var(--green); color: var(--on-dark); }
 .trip.cheapest .meta { color: rgba(255, 252, 245, .78); }
 .trip.cheapest .tag { background: rgba(255, 252, 245, .16); color: var(--on-dark); }
-.trip.cheapest:hover { border-color: var(--deep); }
+.trip.cheapest { transition: background .15s, border-color .15s, transform .15s, box-shadow .15s; }
+.trip.cheapest:hover {
+  background: #2F5A41; border-color: var(--text);
+  transform: translateY(-3px);
+  box-shadow: 0 0 0 2px var(--text), 0 12px 24px rgba(30, 58, 44, .3);
+}
 
 .note { padding: 18px; color: var(--muted); font-size: 14px; }
 .note a { color: var(--text); font-weight: 600; }
