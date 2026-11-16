@@ -294,3 +294,15 @@ input::placeholder { color: var(--muted); }
 .eco-kg { font-size: 15px; margin-top: 2px; }
 .eco-kg strong { font-size: 20px; font-weight: 600; letter-spacing: -.015em; }
 .eco-body .eco-bar { margin-top: 8px; }
+
+/* Udledning som farvet pille: grøn = lav, gul = middel, rød = høj */
+.co2-pill {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 4px 10px 4px 8px; border-radius: 999px;
+  font-size: 14px; font-weight: 600; line-height: 1.2;
+}
+.co2-dot { width: 9px; height: 9px; border-radius: 50%; background: currentColor; }
+.co2-pill.low  { background: #DDEFE2; color: #1F6B3A; }
+.co2-pill.mid  { background: #FBEFC9; color: #7A5A06; }
+.co2-pill.high { background: #F8DCD6; color: #A3301C; }
+.eco summary .co2-pill { margin-right: auto; }

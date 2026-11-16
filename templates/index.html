@@ -2,8 +2,8 @@
 {% macro eco_box(e) %}
         <details class="eco">
           <summary>
-            <span class="eco-title">Klimascore</span>
-            <span class="stars" role="img" aria-label="{{ e.stars }} af 3 stjerner">{% for i in range(3) %}<i class="{{ 'on' if i < e.stars }}">★</i>{% endfor %}</span>
+            {% set lvl = {3: ('low', 'Lav udledning'), 2: ('mid', 'Middel udledning'), 1: ('high', 'Høj udledning')}[e.stars] %}
+            <span class="co2-pill {{ lvl[0] }}"><span class="co2-dot" aria-hidden="true"></span>{{ lvl[1] }}</span>
             <span class="eco-toggle">Udfold</span>
           </summary>
           <div class="eco-body">
@@ -113,7 +113,7 @@
       </div>
     </section>
     <p class="eco-sources" id="ecoSources" hidden>
-      Klimascore: 3 stjerner = mest klimavenlig. CO₂ pr. person på en tur Aarhus → København, inkl. produktion af brændstof og strøm. Kilder: {% for name, url in eco_sources %}{% if url %}<a href="{{ url }}" target="_blank" rel="noopener">{{ name }}</a>{% else %}{{ name }}{% endif %}{{ "; " if not loop.last }}{% endfor %}.
+      Udledning: CO₂ pr. person på en tur Aarhus → København, inkl. produktion af brændstof og strøm. Kilder: {% for name, url in eco_sources %}{% if url %}<a href="{{ url }}" target="_blank" rel="noopener">{{ name }}</a>{% else %}{{ name }}{% endif %}{{ "; " if not loop.last }}{% endfor %}.
     </p>
   </main>
 
