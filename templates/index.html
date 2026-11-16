@@ -7,7 +7,7 @@
             <span class="eco-toggle">Udfold</span>
           </summary>
           <div class="eco-body">
-            <div class="eco-route">{{ route }}, pr. person</div>
+            <div class="eco-route">{{ route }}, pr. person*</div>
             <div class="eco-kg"><strong>{{ e.kg_text }}</strong> CO₂e</div>
             <div class="eco-bar" aria-hidden="true"><i class="{{ 'range' if e.range }}" style="left: {{ e.left }}%; width: {{ e.width }}%"></i></div>
             <p class="eco-note">{{ e.how }}</p>
@@ -37,7 +37,7 @@
   </header>
   <main class="wrap">
     <section class="hero">
-      <h1><strong>Én søgning.</strong> FlixBus, DSB og Kombardo samlet. Fuldt overblik.</h1>
+      <h1><strong>Én søgning.</strong> Ét overblik. FlixBus, DSB og Kombardo.</h1>
     </section>
 
     <form id="search" class="card search" autocomplete="off">
@@ -116,7 +116,7 @@
         <div class="list"></div>
       </div>
       <div id="ecoAll" class="eco-all" hidden>
-        <div class="eco-route">CO₂e pr. person, {{ route }}</div>
+        <div class="eco-route">CO₂e pr. person, {{ route }}*</div>
         {% for p, name, dot in [('flixbus', 'FlixBus', 'flix'), ('dsb', 'DSB', 'dsb'), ('kombardo', 'Kombardo', 'kombardo')] %}
         <div class="eco-all-row"><span><span class="dot {{ dot }}"></span>{{ name }}</span><strong>{{ eco[p].kg_text }}</strong></div>
         {% endfor %}
@@ -124,7 +124,7 @@
       </div>
     </section>
     <details class="eco-sources" id="ecoSources" hidden>
-      <summary>Om CO₂-tallene</summary>
+      <summary>* Om CO₂-tallene</summary>
       <p>CO₂ pr. person på en tur {{ route }}, inkl. produktion af brændstof og strøm.</p>
       <ul>
         {% for name, url in eco_sources %}<li>{% if url %}<a href="{{ url }}" target="_blank" rel="noopener">{{ name }}</a>{% else %}{{ name }}{% endif %}</li>{% endfor %}
