@@ -113,8 +113,12 @@ for (const id of ["from", "to"]) {
   input.addEventListener("keydown", (e) => {
     if (box.hidden) return;
     const n = box.children.length;
-    if (e.key === "ArrowDown") { active = (active + 1) % n; highlight(); e.preventDefault(); }
-    else if (e.key === "ArrowUp") { active = (active - 1 + n) % n; highlight(); e.preventDefault(); }
+    // Tab/pil ned = næste forslag, Shift+Tab/pil op = forrige (kun mens listen er åben).
+    // Når listen er lukket (Enter eller Esc), virker Tab normalt og går til næste felt.
+    const next = e.key === "ArrowDown" || (e.key === "Tab" && !e.shiftKey);
+    const prev = e.key === "ArrowUp" || (e.key === "Tab" && e.shiftKey);
+    if (next) { active = (active + 1) % n; highlight(); e.preventDefault(); }
+    else if (prev) { active = active <= 0 ? n - 1 : active - 1; highlight(); e.preventDefault(); }
     else if (e.key === "Enter" && active >= 0) { pick(box.children[active].textContent); e.preventDefault(); }
     else if (e.key === "Escape") close();
   });
