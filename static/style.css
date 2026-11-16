@@ -141,9 +141,13 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
 .trip {
   display: block; color: inherit; text-decoration: none; padding: 16px 18px;
   animation: rise .35s ease-out both;
-  transition: border-color .15s, transform .15s;
+  transition: background .15s, border-color .15s, transform .15s, box-shadow .15s;
 }
-.trip:hover { border-color: var(--text); transform: translateY(-1px); }
+/* Hover på alle afgange: løft, sort ring og blød skygge, så man tydeligt ser, hvad man rammer */
+.trip:hover {
+  background: #FFFDF8; border-color: var(--text); transform: translateY(-3px);
+  box-shadow: 0 0 0 1px var(--text), 0 10px 22px rgba(34, 34, 34, .10);
+}
 .trip .top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
 .trip .time { font-size: 20px; font-weight: 600; letter-spacing: -.015em; }
 .trip .price { font-size: 20px; font-weight: 600; letter-spacing: -.015em; white-space: nowrap; }
@@ -154,9 +158,8 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
 .trip.cheapest { background: var(--green); border-color: var(--green); color: var(--on-dark); }
 .trip.cheapest .meta { color: rgba(255, 252, 245, .78); }
 .trip.cheapest .tag { background: rgba(255, 252, 245, .16); color: var(--on-dark); }
-.trip.cheapest { transition: background .15s, border-color .15s, transform .15s, box-shadow .15s; }
 .trip.cheapest:hover {
-  background: #2F5A41; border-color: var(--text);
+  background: #5A8C6C; border-color: var(--text);
   transform: translateY(-3px);
   box-shadow: 0 0 0 2px var(--text), 0 12px 24px rgba(30, 58, 44, .3);
 }
