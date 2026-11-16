@@ -34,6 +34,7 @@
     selected = new Date(dt);
     input.value = iso(selected);
     text.textContent = label(selected);
+    input.dispatchEvent(new Event("change"));  // så tidsvælgeren kan grå timer ud, der er gået
   }
 
   function render() {

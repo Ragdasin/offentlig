@@ -30,10 +30,13 @@ function syncToggles() {
   $("discount").hidden = !disc;
   $("discountOff").hidden = disc;
 }
-$("useTime").addEventListener("change", syncToggles);
+$("useTime").addEventListener("change", () => {
+  syncToggles();
+  if ($("useTime").checked) $("timeBtn").click();   // slå til = åbn tidsvælgeren med det samme
+});
 $("useDiscount").addEventListener("change", syncToggles);
 $("timesOff").addEventListener("click", () => {
-  $("useTime").checked = true; syncToggles(); $("timeFrom").focus();
+  $("useTime").checked = true; syncToggles(); $("timeBtn").click();
 });
 $("discountOff").addEventListener("click", () => {
   $("useDiscount").checked = true; syncToggles(); $("discount").focus();
