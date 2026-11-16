@@ -2,8 +2,8 @@
 {% macro eco_box(e) %}
         <details class="eco">
           <summary>
-            {% set lvl = {3: ('low', 'Lav udledning'), 2: ('mid', 'Middel udledning'), 1: ('high', 'Høj udledning')}[e.stars] %}
-            <span class="co2-pill {{ lvl[0] }}">{{ lvl[1] }}</span>
+            {% set lvl = {3: ('low', 'Lav udledning', 'Lav CO₂'), 2: ('mid', 'Middel udledning', 'Middel CO₂'), 1: ('high', 'Høj udledning', 'Høj CO₂')}[e.stars] %}
+            <span class="co2-pill {{ lvl[0] }}"><span class="long">{{ lvl[1] }}</span><span class="short">{{ lvl[2] }}</span></span>
             <span class="eco-toggle">Udfold</span>
           </summary>
           <div class="eco-body">
@@ -91,6 +91,10 @@
       </div>
 
       <button type="submit" class="cta">Søg billigst</button>
+      <div class="search-summary" id="searchSummary">
+        <span id="searchSummaryText"></span>
+        <button type="button" id="editSearch" class="edit-btn">Ret</button>
+      </div>
     </form>
 
     <section id="banner" class="banner" hidden></section>
@@ -110,6 +114,13 @@
         <h2><span class="dot kombardo"></span>Kombardo</h2>
         {{ eco_box(eco.kombardo) }}
         <div class="list"></div>
+      </div>
+      <div id="ecoAll" class="eco-all" hidden>
+        <div class="eco-route">CO₂e pr. person, {{ route }}</div>
+        {% for p, name, dot in [('flixbus', 'FlixBus', 'flix'), ('dsb', 'DSB', 'dsb'), ('kombardo', 'Kombardo', 'kombardo')] %}
+        <div class="eco-all-row"><span><span class="dot {{ dot }}"></span>{{ name }}</span><strong>{{ eco[p].kg_text }}</strong></div>
+        {% endfor %}
+        <p class="eco-note">Tryk på en pille igen for at lukke.</p>
       </div>
     </section>
     <p class="eco-sources" id="ecoSources" hidden>

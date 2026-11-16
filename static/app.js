@@ -136,6 +136,10 @@ $("search").addEventListener("submit", async (e) => {
   if ($("useDiscount").checked) q.discount = $("discount").value;
   save(q);
 
+  $("searchSummaryText").textContent =
+    `${q.from} → ${q.to} · ${$("dateText").textContent}` + (q.discount ? ` · ${$("discount").selectedOptions[0].text}` : "");
+  $("search").classList.add("collapsed");
+
   $("results").hidden = false;
   $("ecoSources").hidden = false;
   $("banner").hidden = true;
@@ -187,6 +191,14 @@ function renderColumn(provider, list, data) {
           <span class="tag">${escapeHtml(t.ticket_type)}</span>
           <span>Plads: ${t.seat_price == null ? "vælges ved booking" : "+" + t.seat_price + " kr"}</span>
         </div>
+        <div class="m-price">${t.price} kr</div>
+        <div class="m-dep">${t.departure}</div>
+        <div class="m-sub">→ ${t.arrival} · ${fmtDuration(t.duration_min).replace(" min", "")} · ${t.transfers ? t.transfers + " skift" : "direkte"}</div>
+        <div class="m-details">
+          <span class="tag">${escapeHtml(t.ticket_type)}</span>
+          <span>Plads: ${t.seat_price == null ? "ved booking" : "+" + t.seat_price + " kr"}</span>
+          <span class="book-btn">Book hos ${name} →</span>
+        </div>
       </a>`)
     .join("");
 }
@@ -219,9 +231,29 @@ function escapeHtml(s) {
 
 load();
 
+// ---------- Mobil (under 820 px) ----------
+const MOBILE = window.matchMedia("(max-width: 820px)");
+
+$("editSearch").addEventListener("click", () => {
+  $("search").classList.remove("collapsed");
+  $("from").focus();
+});
+
+// Første tryk på et kort viser detaljer; "Book"-knappen sender videre til selskabet.
+$("results").addEventListener("click", (e) => {
+  const card = e.target.closest(".trip");
+  if (!card || !MOBILE.matches) return;
+  if (card.classList.contains("open") && e.target.closest(".book-btn")) return; // lad linket virke
+  e.preventDefault();
+  const wasOpen = card.classList.contains("open");
+  document.querySelectorAll(".trip.open").forEach((c) => c.classList.remove("open"));
+  if (!wasOpen) card.classList.add("open");
+});
+
 // ---------- Klima-bokse: fold alle tre ud/ind sammen, så man kan sammenligne ----------
 document.querySelectorAll("details.eco").forEach((d) => {
   d.addEventListener("toggle", () => {
+    $("ecoAll").hidden = !d.open; // samlet boks på mobil (skjult via CSS på pc)
     document.querySelectorAll("details.eco").forEach((o) => {
       if (o !== d && o.open !== d.open) o.open = d.open;
     });
