@@ -230,7 +230,8 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
 .dp-title { font-weight: 600; font-size: 17px; text-transform: capitalize; letter-spacing: -.01em; }
 .dp-nav {
   width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--line); background: var(--card);
-  font-size: 18px; line-height: 1; color: var(--text); cursor: pointer;
+  font-size: 18px; line-height: 0; color: var(--text); cursor: pointer;
+  padding: 0; display: grid; place-items: center;   /* pilen præcis i midten af cirklen */
 }
 .dp-nav:hover:not(:disabled) { background: var(--field); }
 .dp-nav:disabled { opacity: .3; cursor: default; }

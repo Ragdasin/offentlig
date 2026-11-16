@@ -61,9 +61,9 @@
 
     pop.innerHTML = `
       <div class="dp-head">
-        <button type="button" class="dp-nav" data-nav="-1" aria-label="Forrige måned" ${canPrev ? "" : "disabled"}>‹</button>
+        <button type="button" class="dp-nav" data-nav="-1" aria-label="Forrige måned" ${canPrev ? "" : "disabled"}><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
         <span class="dp-title">${MONTHS[m]} ${y}</span>
-        <button type="button" class="dp-nav" data-nav="1" aria-label="Næste måned">›</button>
+        <button type="button" class="dp-nav" data-nav="1" aria-label="Næste måned"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
       </div>
       <div class="dp-week">${DAYS.map((d) => `<span>${d}</span>`).join("")}</div>
       <div class="dp-grid">${cells}</div>
