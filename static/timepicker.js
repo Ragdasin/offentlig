@@ -90,13 +90,9 @@
       : `<span>Afgang mellem</span><b>${span(a, b)}</b>`;
 
     pop.innerHTML = `
-      <div class="tp-quick">${quick}${fromNow}</div>
+      <div class="tp-quick">${quick}${fromNow}<button type="button" data-act="all"><b>Hele dagen</b><small>00–24</small></button></div>
       <div class="tp-hint" aria-live="polite">${hint}</div>
-      <div class="tp-grid" role="group" aria-label="Timer">${cells}</div>
-      <div class="tp-foot">
-        <button type="button" data-act="all">Hele dagen</button>
-        <button type="button" class="tp-done" data-act="done">Færdig</button>
-      </div>`;
+      <div class="tp-grid" role="group" aria-label="Timer">${cells}</div>`;
   }
 
   function focusCell() { pop.querySelector(`[data-h="${focusH}"]`)?.focus(); }
@@ -141,8 +137,7 @@
     else if (q && !q.disabled) {
       a = Math.max(Number(q.dataset.a), firstHour()); b = Number(q.dataset.b); pickingEnd = false;
       commit(); render(); setTimeout(() => close(), 160);
-    } else if (act === "done") close();
-    else if (act === "all") {
+    } else if (act === "all") {
       pickingEnd = false; close(false);
       const cb = document.getElementById("useTime");
       cb.checked = false; cb.dispatchEvent(new Event("change"));
