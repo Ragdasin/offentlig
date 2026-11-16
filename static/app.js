@@ -43,6 +43,27 @@ $("swap").addEventListener("click", () => {
 });
 
 // ---------- Byforslag (egen dropdown) ----------
+// "Århus" = "aarhus", "kobenhavn" = "københavn" osv.
+const norm = (s) => s.toLowerCase()
+  .replace(/å/g, "aa").replace(/æ/g, "ae").replace(/ø/g, "oe")
+  .normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9 ]/g, "");
+// Folk skriver også "kobenhavn" / "arhus" uden danske bogstaver
+const plain = (s) => norm(s.toLowerCase().replace(/å/g, "a").replace(/ø/g, "o").replace(/æ/g, "a"));
+const PLACES = (typeof POPULAR_PLACES !== "undefined" ? POPULAR_PLACES : [])
+  .map(([name, ...alias]) => ({ name, keys: [name, ...alias].flatMap((x) => [norm(x), plain(x)]) }));
+
+// Lokale forslag: først dem der starter med det skrevne, så dem hvor et ord gør.
+function localSuggestions(q) {
+  const n = norm(q);
+  if (!n) return [];
+  const starts = [], words = [];
+  for (const p of PLACES) {
+    if (p.keys.some((k) => k.startsWith(n))) starts.push(p.name);
+    else if (p.keys.some((k) => k.split(" ").some((w) => w.startsWith(n)))) words.push(p.name);
+  }
+  return [...starts, ...words];
+}
+
 for (const id of ["from", "to"]) {
   const input = $(id);
   const box = document.createElement("ul");
@@ -56,22 +77,37 @@ for (const id of ["from", "to"]) {
   const highlight = () =>
     [...box.children].forEach((li, i) => li.classList.toggle("active", i === active));
 
+  const show = (names) => {
+    if (!names.length) return close();
+    const keep = active >= 0 ? box.children[active]?.textContent : null;
+    box.innerHTML = names.map((n) => `<li>${escapeHtml(n)}</li>`).join("");
+    [...box.children].forEach((li, i) =>
+      li.addEventListener("mousedown", (e) => { e.preventDefault(); pick(names[i]); }));
+    active = keep ? names.indexOf(keep) : -1;
+    highlight();
+    box.hidden = false;
+  };
+
   input.addEventListener("input", () => {
     clearTimeout(timer);
     const q = input.value.trim();
-    if (q.length < 3) return close();
+    reqNo++;
+    if (!q) return close();
+
+    // 1) Populære steder: med det samme, fra 1 bogstav
+    const local = localSuggestions(q).slice(0, 8);
+    show(local);
+
+    // 2) Alle andre stationer: spørg DSB efter 0,1 sek (DSB giver først gode svar fra 3 bogstaver)
+    if (q.length < 3) return;
     timer = setTimeout(async () => {
-      const my = ++reqNo;
-      let names = [];
-      try { names = await (await fetch(`/api/autocomplete?q=${encodeURIComponent(q)}`)).json(); } catch {}
-      if (my !== reqNo || document.activeElement !== input) return; // et nyere svar er på vej
-      if (!names.length) return close();
-      box.innerHTML = names.map((n) => `<li>${escapeHtml(n)}</li>`).join("");
-      [...box.children].forEach((li, i) =>
-        li.addEventListener("mousedown", (e) => { e.preventDefault(); pick(names[i]); }));
-      active = -1;
-      box.hidden = false;
-    }, 200);
+      const my = reqNo;
+      let remote = [];
+      try { remote = await (await fetch(`/api/autocomplete?q=${encodeURIComponent(q)}`)).json(); } catch {}
+      if (my !== reqNo || document.activeElement !== input) return; // brugeren har skrevet videre
+      const seen = new Set(local.map(norm));
+      show([...local, ...remote.filter((n) => !seen.has(norm(n)))].slice(0, 8));
+    }, 100);
   });
 
   input.addEventListener("keydown", (e) => {
