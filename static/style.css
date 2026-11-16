@@ -252,7 +252,7 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
 .dp-day.selected { background: var(--detail); color: var(--on-detail); font-weight: 600; box-shadow: none; }
 .dp-day:disabled { color: #CCC5B8; cursor: default; }
 
-.dp-quick { display: flex; gap: 8px; margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+.dp-quick { display: flex; gap: 8px; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
 .dp-quick button {
   flex: 1; font: inherit; font-size: 14px; font-weight: 600; color: var(--text);
   background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 7px 0; cursor: pointer;
