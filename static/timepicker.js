@@ -38,7 +38,7 @@
   function commit() {
     from.value = `${pad(a)}:00`;
     to.value = b === 23 ? "23:59" : `${pad(b + 1)}:00`;
-    text.textContent = span(a, b);
+    text.innerHTML = `<span class="t-long">${span(a, b)}</span><span class="t-short">kl. ${pad(a)}–${endLabel(b).slice(0, 2)}</span>`;
     btn.setAttribute("aria-label", `Afgang mellem ${pad(a)}:00 og ${endLabel(b)}, skift tidsrum`);
   }
 

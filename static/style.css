@@ -85,6 +85,7 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
 .swap {
   width: 44px; height: 50px; border-radius: 50%; border: 1px solid var(--line);
   background: var(--card); font-size: 18px; cursor: pointer; color: var(--text);
+  padding: 0; display: grid; place-items: center; line-height: 0;
   transition: transform .25s, background .15s;
 }
 .swap:hover { transform: rotate(180deg); background: var(--detail-soft); }
@@ -92,7 +93,9 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
 .check { display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
 .check input { width: 16px; height: 16px; margin: 0; accent-color: var(--detail); padding: 0; cursor: pointer; }
 
-.times { position: relative; }
+.times { position: relative; min-width: 0; }
+#timeText .t-short { display: none; }
+.picker-backdrop { display: none; }
 #timeText { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; font-variant-numeric: tabular-nums; }
 
 /* "Slået fra"-boks: samme størrelse som et felt, klik for at slå til */
@@ -189,6 +192,8 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
 .list .skeleton:nth-child(4) { animation-delay: .36s; }
 
 @keyframes shimmer { from { background-position: 150% 0; } to { background-position: -50% 0; } }
+@keyframes pop { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: none; } }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
 @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
 /* Byforslag */
@@ -230,10 +235,10 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
 .dp-nav:hover:not(:disabled) { background: var(--field); }
 .dp-nav:disabled { opacity: .3; cursor: default; }
 
-.dp-week, .dp-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.dp-week, .dp-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
 .dp-week span { text-align: center; font-size: 12px; font-weight: 600; color: var(--muted); padding-bottom: 6px; }
 .dp-day {
-  aspect-ratio: 1; border: 0; border-radius: var(--radius-sm); background: none;
+  aspect-ratio: 1; border: 0; border-radius: var(--radius-sm); background: none; padding: 0; min-width: 0;
   font: inherit; font-size: 15px; color: var(--text); cursor: pointer;
   transition: background .12s, color .12s;
 }
@@ -303,7 +308,23 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
   .route { grid-template-columns: 1fr; }
   .row { grid-template-columns: 1fr 1fr; }
   .datefield { grid-column: 1 / -1; }
-  .timepicker { width: calc(100vw - 70px); max-width: 340px; }
+  #timeText .t-long { display: none; }
+  #timeText .t-short { display: inline; }
+
+  /* Dato- og tidsvælger som pop-up midt på skærmen med mørk baggrund */
+  .datepicker, .timepicker {
+    position: fixed; inset: 0; margin: auto; z-index: 50;
+    width: min(360px, calc(100vw - 32px)); max-width: none; height: fit-content;
+    max-height: calc(100dvh - 32px); overflow-y: auto; padding: 18px;
+    box-shadow: 0 24px 60px rgba(34, 34, 34, .25);
+    animation: pop .18s ease-out;
+  }
+  body:has(.datepicker:not([hidden])) .picker-backdrop {
+    display: block; position: fixed; inset: 0; z-index: 40;
+    background: rgba(34, 34, 34, .45); animation: fade .18s ease-out;
+  }
+  body:has(.datepicker:not([hidden])) { overflow: hidden; }
+  .tp-h { height: 46px; font-size: 16px; }
   .swap { justify-self: center; transform: rotate(90deg); height: 44px; }
   .swap:hover { transform: rotate(270deg); }
 }

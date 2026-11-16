@@ -47,7 +47,12 @@
           <span>Fra</span>
           <input id="from" name="from" placeholder="Aarhus" required>
         </label>
-        <button type="button" id="swap" class="swap" aria-label="Byt fra og til" tabindex="-1">⇄</button>
+        <button type="button" id="swap" class="swap" aria-label="Byt fra og til" tabindex="-1">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+               stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 8h15M15 4l4 4-4 4M20 16H5M9 12l-4 4 4 4"/>
+          </svg>
+        </button>
         <label class="field">
           <span>Til</span>
           <input id="to" name="to" placeholder="København" required>
@@ -77,7 +82,7 @@
             <input type="hidden" id="timeTo" value="18:00">
             <button type="button" id="timeBtn" class="date-btn" aria-haspopup="dialog" aria-expanded="false"
                     aria-label="Afgang mellem, vælg tidsrum">
-              <span id="timeText">14:00 – 18:00</span>
+              <span id="timeText"><span class="t-long">14:00 – 18:00</span><span class="t-short">kl. 14–18</span></span>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                    stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>
@@ -140,6 +145,7 @@
       </ul>
     </details>
   </main>
+  <div class="picker-backdrop" aria-hidden="true"></div>
 
   <script src="{{ url_for('static', filename='stations.js') }}"></script>
   <script src="{{ url_for('static', filename='datepicker.js') }}"></script>
