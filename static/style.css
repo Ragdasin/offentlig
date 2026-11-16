@@ -10,12 +10,14 @@
   --accent: #B41730;      /* søgeknap: DSB-rød */
   --on-accent: #FFFCF5;
   --accent-hover: #981327;
-  --detail: #73D700;      /* detaljer (valgt dato, flueben, mærker): FlixBus-grøn */
-  --on-detail: #1B2A00;
-  --detail-soft: #EBF7D3;
-  --tag-text: #2E5A00;
-  --deep: #003A6E;        /* mørk blå: tekst på lyse knapper oven på billigste/banner */
-  --green: #00539B;       /* billigste afgang og banner: Kombardo-blå (navnet er historisk) */
+  --detail: #00539B;      /* detaljer (valgt dato, flueben, mærker): Kombardo-blå */
+  --on-detail: #FFFCF5;
+  --detail-soft: #DCE8F4;
+  --tag-text: #00427C;
+  --deep: #003A6E;
+  --green: #73D700;       /* billigste afgang og banner: FlixBus-grøn (lys, så teksten ovenpå er mørk) */
+  --on-green: #1B2A00;    /* tekst på den grønne */
+  --green-hover: #66C200;
   --on-dark: #FFFCF5;
   --radius: 8px;
   --radius-sm: 4px;
@@ -121,23 +123,23 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
 /* Banner: mørkt kort som Zetlands artikelkort */
 .banner {
   max-width: 720px; margin: 28px auto 0; padding: 22px 24px;
-  background: var(--green); color: var(--on-dark); border-radius: var(--radius);
+  background: var(--green); color: var(--on-green); border-radius: var(--radius);
   display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between;
   animation: rise .35s ease-out;
   position: relative; cursor: pointer; transition: background .15s, transform .15s, box-shadow .15s;
 }
 /* Hele banneret er klikbart: linkets usynlige flade dækker kortet */
 .banner a::after { content: ""; position: absolute; inset: 0; border-radius: var(--radius); }
-.banner:hover { background: #1A6AB0; transform: translateY(-2px); box-shadow: 0 12px 24px rgba(0, 58, 110, .3); }
+.banner:hover { background: var(--green-hover); transform: translateY(-2px); box-shadow: 0 12px 24px rgba(60, 110, 0, .3); }
 .banner:has(a:focus-visible) { outline: 2px solid var(--text); outline-offset: 3px; }
 .banner a:focus-visible { outline: none; }
-.banner .label { font-size: 14px; font-weight: 600; color: rgba(255, 252, 245, .8); }
+.banner .label { font-size: 14px; font-weight: 600; color: color-mix(in srgb, var(--on-green) 75%, transparent); }
 .banner .what { font-size: 22px; font-weight: 600; letter-spacing: -.015em; line-height: 1.25; }
 .banner a {
-  color: var(--deep); background: var(--on-dark); font-weight: 600; text-decoration: none;
+  color: var(--on-dark); background: var(--on-green); font-weight: 600; text-decoration: none;
   padding: 10px 16px; border-radius: 999px; white-space: nowrap;
 }
-.banner:hover a { background: #fff; }
+.banner:hover a { background: #000; }
 
 /* Resultater */
 .results { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 32px; }
@@ -165,13 +167,13 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
 .tag { background: var(--detail-soft); color: var(--tag-text); font-weight: 600; font-size: 12px; padding: 2px 8px; border-radius: var(--radius-sm); }
 
 /* Billigste afgang: farvet kort med creme tekst */
-.trip.cheapest { background: var(--green); border-color: var(--green); color: var(--on-dark); }
-.trip.cheapest .meta { color: rgba(255, 252, 245, .78); }
-.trip.cheapest .tag { background: rgba(255, 252, 245, .16); color: var(--on-dark); }
+.trip.cheapest { background: var(--green); border-color: var(--green); color: var(--on-green); }
+.trip.cheapest .meta { color: color-mix(in srgb, var(--on-green) 78%, transparent); }
+.trip.cheapest .tag { background: color-mix(in srgb, var(--on-green) 12%, transparent); color: var(--on-green); }
 .trip.cheapest:hover {
-  background: #1A6AB0; border-color: var(--text);
+  background: var(--green-hover); border-color: var(--text);
   transform: translateY(-3px);
-  box-shadow: 0 0 0 2px var(--text), 0 12px 24px rgba(0, 58, 110, .3);
+  box-shadow: 0 0 0 2px var(--text), 0 12px 24px rgba(60, 110, 0, .3);
 }
 
 .note { padding: 18px; color: var(--muted); font-size: 14px; }
@@ -462,7 +464,7 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
   .m-dep { display: block; text-align: center; font-size: 14px; font-weight: 400; margin-top: 2px; letter-spacing: -.01em; }
   /* Ankomst rykker ned på egen linje, hvis kolonnen er for smal */
   .m-arr { color: var(--muted); display: inline-block; white-space: nowrap; margin-left: .3em; }
-  .trip.cheapest .m-arr { color: rgba(255, 252, 245, .78); }
+  .trip.cheapest .m-arr { color: color-mix(in srgb, var(--on-green) 78%, transparent); }
   .m-sub { text-align: center; }
   /* Lukket kort: kun pris + afgang + lille pil. Tryk folder resten ud. */
   .trip { position: relative; padding-bottom: 18px; }
@@ -476,16 +478,16 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
   .m-more > div { overflow: hidden; min-height: 0; }
   .trip.open .m-more { grid-template-rows: 1fr; }
   .m-sub { font-size: 11.5px; line-height: 1.35; color: var(--muted); margin-top: 6px; }
-  .trip.cheapest .m-sub { color: rgba(255, 252, 245, .78); }
+  .trip.cheapest .m-sub { color: color-mix(in srgb, var(--on-green) 78%, transparent); }
   .m-details { display: grid; gap: 6px; margin-top: 8px; font-size: 11.5px; color: var(--muted); }
-  .trip.cheapest .m-details { color: rgba(255, 252, 245, .85); }
+  .trip.cheapest .m-details { color: color-mix(in srgb, var(--on-green) 85%, transparent); }
   .m-details .tag { justify-self: start; font-size: 11px; white-space: normal; }
   .book-btn {
     display: block; text-align: center; margin: 2px 0 4px; padding: 7px 4px;
     background: var(--accent); color: var(--on-accent); border-radius: var(--radius-sm);
     font-weight: 600; font-size: 12px;
   }
-  .trip.cheapest .book-btn { background: var(--on-dark); color: var(--deep); }
+  .trip.cheapest .book-btn { background: var(--on-green); color: var(--on-dark); }
 
   /* CO2-pillen: lille pil der vender, når den samlede boks er åben */
   .co2-pill .short::after {
