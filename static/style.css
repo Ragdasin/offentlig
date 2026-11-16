@@ -333,7 +333,7 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
   font-size: 14px; font-weight: 600; line-height: 1.2;
 }
 
-.co2-pill.low  { background: #DDEFE2; color: #1F6B3A; }
+.co2-pill.low  { background: var(--detail-soft); color: var(--tag-text); }
 .co2-pill.mid  { background: #FBEFC9; color: #7A5A06; }
 .co2-pill.high { background: #F8DCD6; color: #A3301C; }
 .eco summary .co2-pill { margin-right: auto; }
