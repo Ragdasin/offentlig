@@ -124,7 +124,7 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
   position: relative; cursor: pointer; transition: background .15s, transform .15s, box-shadow .15s;
 }
 /* Hele banneret er klikbart: linkets usynlige flade dækker kortet */
-.banner a::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.banner a::after { content: ""; position: absolute; inset: 0; border-radius: var(--radius); }
 .banner:hover { background: #1A6AB0; transform: translateY(-2px); box-shadow: 0 12px 24px rgba(0, 58, 110, .3); }
 .banner:has(a:focus-visible) { outline: 2px solid var(--text); outline-offset: 3px; }
 .banner a:focus-visible { outline: none; }
