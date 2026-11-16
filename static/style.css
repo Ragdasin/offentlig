@@ -121,14 +121,20 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
   background: var(--green); color: var(--on-dark); border-radius: var(--radius);
   display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between;
   animation: rise .35s ease-out;
+  position: relative; cursor: pointer; transition: background .15s, transform .15s, box-shadow .15s;
 }
+/* Hele banneret er klikbart: linkets usynlige flade dækker kortet */
+.banner a::after { content: ""; position: absolute; inset: 0; border-radius: inherit; }
+.banner:hover { background: #1A6AB0; transform: translateY(-2px); box-shadow: 0 12px 24px rgba(0, 58, 110, .3); }
+.banner:has(a:focus-visible) { outline: 2px solid var(--text); outline-offset: 3px; }
+.banner a:focus-visible { outline: none; }
 .banner .label { font-size: 14px; font-weight: 600; color: rgba(255, 252, 245, .8); }
 .banner .what { font-size: 22px; font-weight: 600; letter-spacing: -.015em; line-height: 1.25; }
 .banner a {
   color: var(--deep); background: var(--on-dark); font-weight: 600; text-decoration: none;
   padding: 10px 16px; border-radius: 999px; white-space: nowrap;
 }
-.banner a:hover { background: #fff; }
+.banner:hover a { background: #fff; }
 
 /* Resultater */
 .results { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 32px; }
