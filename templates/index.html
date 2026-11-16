@@ -3,7 +3,7 @@
         <details class="eco">
           <summary>
             {% set lvl = {3: ('low', 'Lav udledning'), 2: ('mid', 'Middel udledning'), 1: ('high', 'Høj udledning')}[e.stars] %}
-            <span class="co2-pill {{ lvl[0] }}"><span class="co2-dot" aria-hidden="true"></span>{{ lvl[1] }}</span>
+            <span class="co2-pill {{ lvl[0] }}">{{ lvl[1] }}</span>
             <span class="eco-toggle">Udfold</span>
           </summary>
           <div class="eco-body">
