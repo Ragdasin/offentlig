@@ -239,6 +239,7 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
 .dp-week, .dp-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
 .dp-week span { text-align: center; font-size: 12px; font-weight: 600; color: var(--muted); padding-bottom: 6px; }
 .dp-day {
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
   aspect-ratio: 1; border: 0; border-radius: var(--radius-sm); background: none; padding: 0; min-width: 0;
   font: inherit; font-size: 15px; color: var(--text); cursor: pointer;
   transition: background .12s, color .12s;
@@ -274,6 +275,7 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
 .tp-hint b { color: var(--text); font-weight: 600; font-size: 15px; font-variant-numeric: tabular-nums; }
 .tp-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px 0; }
 .tp-h {
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
   height: 40px; border: 0; background: none; font: inherit; font-size: 15px; color: var(--text);
   font-variant-numeric: tabular-nums; cursor: pointer; position: relative; border-radius: 0;
   transition: background .1s, color .1s;

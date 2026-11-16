@@ -90,7 +90,7 @@
   function close(returnFocus = true) {
     pop.hidden = true;
     btn.setAttribute("aria-expanded", "false");
-    if (returnFocus) btn.focus();
+    if (returnFocus) btn.focus({ preventScroll: true });
   }
 
   function choose(dt) {
