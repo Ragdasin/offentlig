@@ -384,8 +384,8 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
   .trip { padding: 10px 9px; }
   .trip:hover { transform: none; }
   .trip .top, .trip .meta { display: none; }
-  .m-price { display: block; font-size: 18px; font-weight: 600; letter-spacing: -.015em; line-height: 1.2; }
-  .m-dep { display: block; font-size: 15px; font-weight: 600; margin-top: 2px; }
+  .m-price { display: block; text-align: center; font-size: 18px; font-weight: 600; letter-spacing: -.015em; line-height: 1.2; }
+  .m-dep { display: block; text-align: center; font-size: 15px; font-weight: 400; margin-top: 2px; }
   /* Lukket kort: kun pris + afgang + lille pil. Tryk folder resten ud. */
   .trip { position: relative; padding-bottom: 18px; }
   .m-chev {
