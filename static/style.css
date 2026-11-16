@@ -7,10 +7,11 @@
   --text: #222222;        /* blæk */
   --muted: #6E6A63;
   --line: #E7E1D5;
-  --accent: #B8532F;      /* terrakotta (mørk nok til creme tekst ovenpå) */
+  --accent: #222222;      /* blæk (før: terrakotta #B8532F) */
   --on-accent: #FFFCF5;
-  --accent-hover: #A04626;
-  --accent-soft: #F6E3DA;
+  --accent-hover: #000000;
+  --accent-soft: #ECE7DD;
+  --tag-text: #222222;
   --deep: #1E3A2C;        /* banner: dyb, varm skovgrøn */
   --green: #46775A;       /* billigste afgang: salviegrøn */
   --on-dark: #FFFCF5;
@@ -152,7 +153,7 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
 .trip .time { font-size: 20px; font-weight: 600; letter-spacing: -.015em; }
 .trip .price { font-size: 20px; font-weight: 600; letter-spacing: -.015em; white-space: nowrap; }
 .trip .meta { color: var(--muted); font-size: 14px; margin-top: 6px; display: flex; flex-wrap: wrap; gap: 4px 10px; }
-.tag { background: var(--accent-soft); color: #8A3A1E; font-weight: 600; font-size: 12px; padding: 2px 8px; border-radius: var(--radius-sm); }
+.tag { background: var(--accent-soft); color: var(--tag-text); font-weight: 600; font-size: 12px; padding: 2px 8px; border-radius: var(--radius-sm); }
 
 /* Billigste afgang: farvet kort med creme tekst */
 .trip.cheapest { background: var(--green); border-color: var(--green); color: var(--on-dark); }
