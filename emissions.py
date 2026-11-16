@@ -33,7 +33,8 @@ def kg(g_per_km, km):
 G_TOG_TRM, G_BUS_TRM = 26, 25
 
 # Stjerner sættes manuelt ud fra det, kilderne er enige om:
-# tog og fjernbus ligger tæt, bus + færge er klart dårligst.
+# tog og fjernbus ligger tæt; bus + færge (10,8 kg) ligger inden for togets interval,
+# så Kombardo får middel.
 TRIP = {
     "flixbus": {
         "stars": 3,
@@ -49,7 +50,7 @@ TRIP = {
         "own": "COWI-tallet er beregnet for DSB",
     },
     "kombardo": {
-        "stars": 1,
+        "stars": 2,
         "low": kg(G_FERRY, FERRY_KM) + kg(G_BUS, ODDEN_BUS_KM),
         "high": kg(G_FERRY, FERRY_KM) + kg(G_BUS, ODDEN_BUS_KM),
         "how": f"Færge Aarhus–Odden (ca. {FERRY_KM} km) + bus til København (ca. {ODDEN_BUS_KM} km). Færgen trækker op",
