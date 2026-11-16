@@ -117,11 +117,11 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
 /* Banner: mørkt kort som Zetlands artikelkort */
 .banner {
   max-width: 720px; margin: 28px auto 0; padding: 22px 24px;
-  background: var(--deep); color: var(--on-dark); border-radius: var(--radius);
+  background: var(--green); color: var(--on-dark); border-radius: var(--radius);
   display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between;
   animation: rise .35s ease-out;
 }
-.banner .label { font-size: 14px; font-weight: 600; color: #E9967A; }
+.banner .label { font-size: 14px; font-weight: 600; color: rgba(255, 252, 245, .8); }
 .banner .what { font-size: 22px; font-weight: 600; letter-spacing: -.015em; line-height: 1.25; }
 .banner a {
   color: var(--deep); background: var(--on-dark); font-weight: 600; text-decoration: none;
