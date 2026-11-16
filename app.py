@@ -76,7 +76,7 @@ def search(provider):
         if t["departure_date"] == day.isoformat()
         and _in_window(t, a.get("time_from"), a.get("time_to"))
     ]
-    return jsonify({"status": "ok", "trips": trips[:3]})
+    return jsonify({"status": "ok", "trips": trips[:4]})
 
 
 if __name__ == "__main__":

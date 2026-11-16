@@ -152,7 +152,7 @@ $("search").addEventListener("submit", async (e) => {
   const all = await Promise.all(
     Object.keys(PROVIDERS).map(async (p) => {
       const list = document.querySelector(`[data-provider="${p}"] .list`);
-      list.innerHTML = '<div class="skeleton"></div>'.repeat(3);
+      list.innerHTML = '<div class="skeleton"></div>'.repeat(4);
       let data;
       try {
         data = await (await fetch(`/api/search/${p}?${params}`)).json();
