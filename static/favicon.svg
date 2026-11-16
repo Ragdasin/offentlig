@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- offentlig: tre prikker = FlixBus, DSB, Kombardo -->
+  <circle cx="5.5" cy="16" r="5" fill="#73D700"/>
+  <circle cx="16" cy="16" r="5" fill="#B41730"/>
+  <circle cx="26.5" cy="16" r="5" fill="#00539B"/>
+</svg>

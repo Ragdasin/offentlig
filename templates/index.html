@@ -1,0 +1,123 @@
+<!doctype html>
+{% macro eco_box(e) %}
+        <details class="eco">
+          <summary>
+            <span class="eco-title">Klimascore</span>
+            <span class="stars" role="img" aria-label="{{ e.stars }} af 3 stjerner">{% for i in range(3) %}<i class="{{ 'on' if i < e.stars }}">★</i>{% endfor %}</span>
+            <span class="eco-toggle">Udfold</span>
+          </summary>
+          <div class="eco-body">
+            <div class="eco-route">{{ route }}, pr. person</div>
+            <div class="eco-kg"><strong>{{ e.kg_text }}</strong> CO₂e</div>
+            <div class="eco-bar" aria-hidden="true"><i class="{{ 'range' if e.range }}" style="left: {{ e.left }}%; width: {{ e.width }}%"></i></div>
+            <p class="eco-note">{{ e.how }}</p>
+            <p class="eco-own">{{ e.own }}</p>
+          </div>
+        </details>
+{% endmacro %}
+<html lang="da">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Offentlig</title>
+  <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='favicon.svg') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="logo" href="/" aria-label="offentlig, forside">
+        <span class="logo-dots" aria-hidden="true"><i class="flix"></i><i class="dsb"></i><i class="kombardo"></i></span>
+        offentlig
+      </a>
+    </div>
+  </header>
+  <main class="wrap">
+    <section class="hero">
+      <h1><strong>Find den billigste vej.</strong> FlixBus, DSB og Kombardo i én søgning.</h1>
+    </section>
+
+    <form id="search" class="card search" autocomplete="off">
+      <div class="route">
+        <label class="field">
+          <span>Fra</span>
+          <input id="from" name="from" placeholder="Aarhus" required>
+        </label>
+        <button type="button" id="swap" class="swap" aria-label="Byt fra og til">⇄</button>
+        <label class="field">
+          <span>Til</span>
+          <input id="to" name="to" placeholder="København" required>
+        </label>
+      </div>
+
+      <div class="row">
+        <div class="field datefield">
+          <span id="dateLabel">Dato</span>
+          <input id="date" name="date" type="hidden" value="{{ today }}" data-min="{{ today }}">
+          <button type="button" id="dateBtn" class="date-btn" aria-labelledby="dateLabel dateBtn"
+                  aria-haspopup="dialog" aria-expanded="false">
+            <span id="dateText"></span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/>
+            </svg>
+          </button>
+          <div id="datePicker" class="datepicker" role="dialog" aria-label="Vælg dato" hidden></div>
+        </div>
+
+        <div class="field">
+          <label class="check head"><input type="checkbox" id="useTime"> Tidsrum</label>
+          <button type="button" class="off-box" id="timesOff">Hele dagen</button>
+          <div class="times" id="times" hidden>
+            <input type="time" id="timeFrom" value="14:00" aria-label="Fra kl.">
+            <span>–</span>
+            <input type="time" id="timeTo" value="18:00" aria-label="Til kl.">
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="check head"><input type="checkbox" id="useDiscount"> Rabat</label>
+          <button type="button" class="off-box" id="discountOff">Ingen rabat</button>
+          <select id="discount" hidden aria-label="Rabattype">
+            <option value="ung">Ung</option>
+            <option value="studerende">Studerende</option>
+            <option value="pensionist">Pensionist</option>
+            <option value="barn">Barn</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="submit" class="cta">Søg billigst</button>
+    </form>
+
+    <section id="banner" class="banner" hidden></section>
+
+    <section id="results" class="results" hidden>
+      <div class="col" data-provider="flixbus">
+        <h2><span class="dot flix"></span>FlixBus</h2>
+        {{ eco_box(eco.flixbus) }}
+        <div class="list"></div>
+      </div>
+      <div class="col" data-provider="dsb">
+        <h2><span class="dot dsb"></span>DSB</h2>
+        {{ eco_box(eco.dsb) }}
+        <div class="list"></div>
+      </div>
+      <div class="col" data-provider="kombardo">
+        <h2><span class="dot kombardo"></span>Kombardo</h2>
+        {{ eco_box(eco.kombardo) }}
+        <div class="list"></div>
+      </div>
+    </section>
+    <p class="eco-sources" id="ecoSources" hidden>
+      Klimascore: 3 stjerner = mest klimavenlig. CO₂ pr. person på en tur Aarhus → København, inkl. produktion af brændstof og strøm. Kilder: {% for name, url in eco_sources %}{% if url %}<a href="{{ url }}" target="_blank" rel="noopener">{{ name }}</a>{% else %}{{ name }}{% endif %}{{ "; " if not loop.last }}{% endfor %}.
+    </p>
+  </main>
+
+  <script src="{{ url_for('static', filename='datepicker.js') }}"></script>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
