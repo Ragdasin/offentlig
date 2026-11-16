@@ -1,7 +1,7 @@
-// Egen tidsvælger: hele tidsfeltet åbner et timegitter.
-// Cellerne er klokkeslæt. Tryk på start og slut (fx 8 og 16 = 08:00–16:00); båndet imellem farves.
-// Slut kan være 24 (resten af dagen), som sendes som "23:59".
-// Resultatet skrives i de skjulte felter timeFrom/timeTo ("14:00" / "18:00"), som søgningen bruger.
+// Egen tidsvælger: hele tidsfeltet åbner en pop-up med to hjul (som på iPhone).
+// Venstre hjul = fra kl. (00–23), højre hjul = til kl. (01–24). Kun hele timer.
+// Over hjulene ligger genveje (Morgen, Aften …). Til kl. 24 sendes som "23:59".
+// Resultatet skrives i de skjulte felter timeFrom/timeTo, som søgningen bruger.
 (() => {
   const from = document.getElementById("timeFrom");
   const to = document.getElementById("timeTo");
@@ -9,25 +9,22 @@
   const text = document.getElementById("timeText");
   const pop = document.getElementById("timePicker");
   const dateInput = document.getElementById("date");
-  const COLS = 6;
+  const ITEM = 40;   // højde på én række i hjulet (skal matche CSS)
 
   const PRESETS = [
-    { id: "morgen", name: "Morgen", a: 5, b: 9 },
-    { id: "formiddag", name: "Formiddag", a: 9, b: 12 },
-    { id: "eftermiddag", name: "Eftermiddag", a: 12, b: 17 },
-    { id: "aften", name: "Aften", a: 17, b: 24 },
+    { name: "Morgen", a: 5, b: 9 },
+    { name: "Formiddag", a: 9, b: 12 },
+    { name: "Eftermiddag", a: 12, b: 17 },
+    { name: "Aften", a: 17, b: 24 },
   ];
 
   const pad = (h) => String(h).padStart(2, "0");
-  const endLabel = (b) => `${pad(b)}:00`;
-  const span = (a, b) => `${pad(a)}:00 – ${endLabel(b)}`;
+  const span = (a, b) => `${pad(a)}:00 – ${pad(b)}:00`;
 
-  // Startværdi fra de skjulte felter
   let a = parseInt(from.value, 10) || 14;
   let b = to.value === "23:59" ? 24 : Math.max(a + 1, parseInt(to.value, 10) || 18);
-  let pickingEnd = false;   // true = første tryk er sket, venter på sluttime
-  let hover = null;
-  let focusH = a;
+  let wheels = {};          // { a: element, b: element }
+  let settleTimer = {};
 
   // Timer der er gået, når datoen er i dag (den igangværende time kan stadig vælges)
   function firstHour() {
@@ -39,8 +36,8 @@
   function commit() {
     from.value = `${pad(a)}:00`;
     to.value = b === 24 ? "23:59" : `${pad(b)}:00`;
-    text.innerHTML = `<span class="t-long">${span(a, b)}</span><span class="t-short">kl. ${pad(a)}–${endLabel(b).slice(0, 2)}</span>`;
-    btn.setAttribute("aria-label", `Afgang mellem ${pad(a)}:00 og ${endLabel(b)}, skift tidsrum`);
+    text.innerHTML = `<span class="t-long">${span(a, b)}</span><span class="t-short">kl. ${pad(a)}–${pad(b)}</span>`;
+    btn.setAttribute("aria-label", `Afgang mellem ${span(a, b)}, skift tidsrum`);
   }
 
   // Hvis datoen skifter til i dag, og tidsrummet ligger før nu: ryk det frem
@@ -51,123 +48,152 @@
     commit();
   }
 
+  // ---------- Hjul ----------
+  const first = (k) => (k === "a" ? 0 : 1);               // laveste værdi i hjulet
+  const last = (k) => (k === "a" ? 23 : 24);
+  const disabled = (k, h) => (k === "a" ? h < firstHour() : h <= firstHour());
+
+  function wheelHTML(k) {
+    let items = "";
+    for (let h = first(k); h <= last(k); h++) {
+      items += `<div class="tp-item" data-k="${k}" data-h="${h}">${pad(h)}</div>`;
+    }
+    const label = k === "a" ? "Fra kl." : "Til kl.";
+    return `<div class="tp-col">
+      <span class="tp-lbl">${label}</span>
+      <div class="tp-wheel" data-k="${k}" tabindex="0" role="spinbutton" aria-label="${label}"
+           aria-valuemin="${first(k)}" aria-valuemax="${last(k)}">
+        <div class="tp-pad"></div>${items}<div class="tp-pad"></div>
+      </div>
+    </div>`;
+  }
+
+  function scrollTo(k, h, smooth) {
+    const w = wheels[k];
+    if (w) w.scrollTo({ top: (h - first(k)) * ITEM, behavior: smooth ? "smooth" : "auto" });
+  }
+  const valueAt = (k) => first(k) + Math.round(wheels[k].scrollTop / ITEM);
+
+  // Opdater markeringer uden at tegne pop-up'en forfra (så scroll og tryk ikke afbrydes)
+  function paint(liveK) {
+    for (const k of ["a", "b"]) {
+      const w = wheels[k];
+      if (!w) continue;
+      const cur = k === liveK ? valueAt(k) : (k === "a" ? a : b);
+      w.querySelectorAll(".tp-item").forEach((el) => {
+        const h = Number(el.dataset.h);
+        el.classList.toggle("sel", h === cur);
+        el.classList.toggle("dis", disabled(k, h));
+      });
+      w.setAttribute("aria-valuenow", cur);
+      w.setAttribute("aria-valuetext", `${pad(cur)}:00`);
+    }
+    const hint = pop.querySelector(".tp-hint b");
+    if (hint) hint.textContent = span(a, b);
+    pop.querySelectorAll(".tp-quick [data-a]").forEach((q) => {
+      q.classList.toggle("on", a === Math.max(Number(q.dataset.a), firstHour()) && b === Number(q.dataset.b));
+    });
+  }
+
+  // Når et hjul står stille: læs værdien og hold fra < til
+  function settle(k) {
+    const min = firstHour();
+    let h = valueAt(k);
+    if (k === "a") {
+      if (h < min) { h = min; scrollTo("a", h, true); }
+      a = h;
+      if (b <= a) { b = a + 1; scrollTo("b", b, true); }
+    } else {
+      if (h <= min) { h = min + 1; scrollTo("b", h, true); }
+      b = h;
+      if (a >= b) { a = b - 1; scrollTo("a", a, true); }
+    }
+    commit();
+    paint();
+  }
+
   function render() {
     const min = firstHour();
-    const now = new Date().getHours();
-    const lo = pickingEnd && hover !== null ? Math.min(a, hover) : a;
-    const hi = pickingEnd ? (hover !== null ? Math.max(a, hover) : a) : Math.min(b, 23);   // sidste farvede celle
-
     const quick = PRESETS.map((p) => {
       const dis = p.b <= min;
-      const on = !pickingEnd && a === Math.max(p.a, min) && b === p.b;
-      return `<button type="button" data-a="${p.a}" data-b="${p.b}" class="${on ? "on" : ""}" ${dis ? "disabled" : ""}>
+      return `<button type="button" data-a="${p.a}" data-b="${p.b}" ${dis ? "disabled" : ""}>
         <b>${p.name}</b><small>${pad(Math.max(p.a, dis ? p.a : min))}–${pad(p.b)}</small></button>`;
     }).join("");
-    // "Fra nu" kun når det er i dag og giver noget andet end "Aften" (efter kl. 17 er de ens)
+    // "Fra nu" kun når det er i dag og giver noget andet end "Aften"
     const fromNow = min > 0 && min < 17
-      ? `<button type="button" data-a="${min}" data-b="24" class="${!pickingEnd && a === min && b === 24 ? "on" : ""}">
-          <b>Fra nu</b><small>${pad(min)}–24</small></button>`
+      ? `<button type="button" data-a="${min}" data-b="24"><b>Fra nu</b><small>${pad(min)}–24</small></button>`
       : "";
-
-    let cells = "";
-    for (let h = 0; h < 24; h++) {
-      const cls = ["tp-h"];
-      const inRange = h >= lo && h <= hi;
-      if (inRange) cls.push("in");
-      if (pickingEnd && hover !== null) { if (inRange && h !== a) cls.push("preview"); if (h === a) cls.push("start", "end"); }
-      else if (pickingEnd) { if (h === a) cls.push("start", "end"); }
-      else { if (h === a) cls.push("start"); if (h === hi) cls.push("end"); }
-      if (h % COLS === 0) cls.push("rowstart");
-      if (h % COLS === COLS - 1) cls.push("rowend");
-      if (min > 0 && h === now) cls.push("now");
-      const dis = h < min;
-      cells += `<button type="button" class="${cls.join(" ")}" data-h="${h}" ${dis ? "disabled" : ""}
-        tabindex="${h === focusH ? 0 : -1}" aria-label="Kl. ${pad(h)}" ${inRange && !pickingEnd ? 'aria-pressed="true"' : ""}>${pad(h)}</button>`;
-    }
-
-    const hint = pickingEnd
-      ? `<span>Vælg sluttidspunkt</span><b>${pad(lo)}:00 – ${hi > lo ? endLabel(hi) : "…"}</b>`
-      : `<span>Afgang mellem</span><b>${span(a, b)}</b>`;
 
     pop.innerHTML = `
       <div class="tp-quick">${quick}${fromNow}<button type="button" data-act="all"><b>Hele dagen</b><small>00–24</small></button></div>
-      <div class="tp-hint" aria-live="polite">${hint}</div>
-      <div class="tp-grid" role="group" aria-label="Timer">${cells}</div>`;
+      <div class="tp-hint"><span>Afgang mellem</span><b aria-live="polite">${span(a, b)}</b></div>
+      <div class="tp-wheels">${wheelHTML("a")}<span class="tp-dash" aria-hidden="true">–</span>${wheelHTML("b")}</div>
+      <button type="button" class="tp-done" data-act="done">Vælg</button>`;
+
+    wheels = { a: pop.querySelector('.tp-wheel[data-k="a"]'), b: pop.querySelector('.tp-wheel[data-k="b"]') };
+    for (const k of ["a", "b"]) {
+      wheels[k].addEventListener("scroll", () => {
+        paint(k);                                   // fremhæv tallet i midten, mens man scroller
+        clearTimeout(settleTimer[k]);
+        settleTimer[k] = setTimeout(() => settle(k), 120);
+      }, { passive: true });
+    }
   }
 
-  function focusCell() { pop.querySelector(`[data-h="${focusH}"]`)?.focus(); }
-
-  function open() {
+  function open(viaKeyboard) {
     clampToNow();
-    pickingEnd = false; hover = null; focusH = a;
     render();
     pop.hidden = false;
     btn.setAttribute("aria-expanded", "true");
-    focusCell();
+    scrollTo("a", a, false);
+    scrollTo("b", b, false);
+    paint();
+    if (viaKeyboard) wheels.a.focus({ preventScroll: true });   // kun tastatur: ingen fokusramme ved tryk
   }
 
   function close(returnFocus = true) {
-    if (pickingEnd) { pickingEnd = false; b = a + 1; commit(); }   // kun ét tryk = én time
+    for (const k in settleTimer) clearTimeout(settleTimer[k]);
     pop.hidden = true;
     btn.setAttribute("aria-expanded", "false");
     if (returnFocus) btn.focus({ preventScroll: true });
   }
 
-  function tapHour(h) {
-    if (h < firstHour()) return;
-    focusH = h;
-    if (!pickingEnd) {
-      a = h; pickingEnd = true; hover = null;
-      render(); focusCell();
-    } else {
-      const lo = Math.min(a, h), hi = Math.max(a, h);
-      a = lo; b = hi === lo ? lo + 1 : hi; pickingEnd = false; hover = null;   // samme tid to gange = én time
-      commit(); render();
-      setTimeout(() => close(), 220);   // lad båndet blive set et øjeblik
-    }
-  }
-
-  btn.addEventListener("click", () => (pop.hidden ? open() : close()));
+  btn.addEventListener("click", (e) => (pop.hidden ? open(e.isTrusted && e.detail === 0) : close()));
 
   pop.addEventListener("click", (e) => {
-    const cell = e.target.closest("[data-h]");
+    const item = e.target.closest(".tp-item");
     const q = e.target.closest("[data-a]");
     const act = e.target.closest("[data-act]")?.dataset.act;
-    if (cell && !cell.disabled) tapHour(Number(cell.dataset.h));
-    else if (q && !q.disabled) {
-      a = Math.max(Number(q.dataset.a), firstHour()); b = Number(q.dataset.b); pickingEnd = false;
-      commit(); render(); setTimeout(() => close(), 160);
+    if (item) {
+      // Tryk på et tal i hjulet: rul det ind i midten
+      const k = item.dataset.k, h = Number(item.dataset.h);
+      if (!disabled(k, h)) scrollTo(k, h, true);
+    } else if (q && !q.disabled) {
+      a = Math.max(Number(q.dataset.a), firstHour()); b = Number(q.dataset.b);
+      scrollTo("a", a, true); scrollTo("b", b, true);
+      commit(); paint();
+      setTimeout(() => close(), 380);   // lad hjulene nå at dreje, så man ser valget
+    } else if (act === "done") {
+      close();
     } else if (act === "all") {
-      pickingEnd = false; close(false);
+      close(false);
       const cb = document.getElementById("useTime");
       cb.checked = false; cb.dispatchEvent(new Event("change"));
     }
   });
 
-  // Forhåndsvis båndet, mens man bevæger musen efter første tryk.
-  // Kun med rigtig mus: på telefon udløser et tryk også "hover", og hvis siden ændrer sig dér,
-  // dropper iPhone selve trykket (så 2. time og "Færdig" ikke virkede).
-  pop.addEventListener("pointerover", (e) => {
-    if (e.pointerType !== "mouse" || !pickingEnd) return;
-    const cell = e.target.closest("[data-h]");
-    const h = cell && !cell.disabled ? Number(cell.dataset.h) : null;
-    if (h !== hover) { hover = h; render(); }
-  });
-  pop.addEventListener("pointerleave", (e) => {
-    if (e.pointerType === "mouse" && pickingEnd && hover !== null) { hover = null; render(); }
-  });
-
   pop.addEventListener("keydown", (e) => {
-    const moves = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -COLS, ArrowDown: COLS };
     if (e.key === "Escape") { e.preventDefault(); return close(); }
-    if (!e.target.matches(".tp-h")) return;
-    if (moves[e.key] !== undefined) {
+    const w = e.target.closest(".tp-wheel");
+    if (!w) return;
+    const step = { ArrowUp: -1, ArrowDown: 1 }[e.key];
+    if (step) {
       e.preventDefault();
-      const next = focusH + moves[e.key];
-      if (next < firstHour() || next > 23) return;
-      focusH = next;
-      if (pickingEnd) hover = next;
-      render(); focusCell();
+      const k = w.dataset.k;
+      const h = Math.min(last(k), Math.max(first(k), (k === "a" ? a : b) + step));
+      if (!disabled(k, h)) scrollTo(k, h, true);
+    } else if (e.key === "Enter") {
+      e.preventDefault(); close();
     }
   });
 

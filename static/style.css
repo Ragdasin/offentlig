@@ -261,13 +261,13 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
 
 /* Tidsvælger: timegitter (hver celle er en hel time), tryk start og slut */
 .timepicker { width: 340px; }
-.tp-quick { display: grid; grid-template-columns: repeat(auto-fit, minmax(92px, 1fr)); gap: 6px; margin-bottom: 14px; }
+.tp-quick { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-bottom: 14px; }
 .tp-quick button {
   display: grid; gap: 0; font: inherit; color: var(--text); text-align: left;
   background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-sm);
-  padding: 6px 10px; cursor: pointer; transition: border-color .12s, background .12s;
+  padding: 6px 8px; cursor: pointer; transition: border-color .12s, background .12s;
 }
-.tp-quick button b { font-size: 14px; font-weight: 600; }
+.tp-quick button b { font-size: 14px; font-weight: 600; white-space: nowrap; }
 .tp-quick button small { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .tp-quick button:hover:not(:disabled) { border-color: var(--text); }
 .tp-quick button.on { background: var(--detail-soft); border-color: var(--detail); }
@@ -275,26 +275,35 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
 .tp-quick button:focus-visible { outline: 2px solid var(--text); outline-offset: 1px; }
 .tp-hint { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 8px; font-size: 13px; color: var(--muted); }
 .tp-hint b { color: var(--text); font-weight: 600; font-size: 15px; font-variant-numeric: tabular-nums; }
-.tp-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px 0; }
-.tp-h {
-  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
-  height: 40px; border: 0; background: none; font: inherit; font-size: 15px; color: var(--text);
-  font-variant-numeric: tabular-nums; cursor: pointer; position: relative; border-radius: 0;
-  transition: background .1s, color .1s;
+/* Hjul: to lodrette lister, der "klikker" på plads ved hver time; tallet i midten er valgt */
+.tp-wheels { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 8px; }
+.tp-col { display: grid; gap: 6px; min-width: 0; border-radius: var(--radius-sm); }
+.tp-col:has(.tp-wheel:focus-visible) { outline: 2px solid var(--text); outline-offset: 2px; }
+.tp-lbl { font-size: 13px; font-weight: 600; color: var(--muted); text-align: center; }
+.tp-dash { color: var(--muted); font-size: 20px; height: 200px; display: grid; place-items: center; }
+.tp-wheel {
+  height: 200px; overflow-y: auto; scroll-snap-type: y mandatory; overscroll-behavior: contain;
+  scrollbar-width: none; outline: none; border-radius: var(--radius-sm); touch-action: pan-y;
+  /* Det faste bånd i midten (40px højt) viser valget; kanterne toner ud */
+  background: linear-gradient(to bottom, transparent 80px, var(--detail-soft) 80px, var(--detail-soft) 120px, transparent 120px), var(--field);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 32%, #000 68%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 32%, #000 68%, transparent);
 }
-.tp-h:hover:not(:disabled) { background: var(--field); border-radius: var(--radius-sm); }
-.tp-h:focus-visible { outline: 2px solid var(--text); outline-offset: -2px; border-radius: var(--radius-sm); z-index: 1; }
-.tp-h:disabled { color: #CCC5B8; cursor: default; text-decoration: line-through; text-decoration-color: #E2DCD0; }
-/* Valgt tidsrum: sammenhængende bånd med runde ender */
-.tp-h.in { background: var(--detail-soft); border-radius: 0; }
-.tp-h.start, .tp-h.end { background: var(--detail); color: var(--on-detail); font-weight: 600; }
-.tp-h.start { border-radius: var(--radius-sm) 0 0 var(--radius-sm); }
-.tp-h.end { border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
-.tp-h.start.end { border-radius: var(--radius-sm); }
-.tp-h.rowstart.in { border-top-left-radius: var(--radius-sm); border-bottom-left-radius: var(--radius-sm); }
-.tp-h.rowend.in { border-top-right-radius: var(--radius-sm); border-bottom-right-radius: var(--radius-sm); }
-.tp-h.preview { background: var(--detail-soft); border-radius: 0; }
-.tp-h.now::after { content: ""; position: absolute; left: 50%; bottom: 4px; width: 4px; height: 4px; margin-left: -2px; border-radius: 50%; background: currentColor; }
+.tp-wheel::-webkit-scrollbar { display: none; }
+.tp-pad { height: 80px; }
+.tp-item {
+  height: 40px; display: flex; align-items: center; justify-content: center; scroll-snap-align: center;
+  font-size: 18px; color: var(--muted); font-variant-numeric: tabular-nums; cursor: pointer; user-select: none;
+  -webkit-tap-highlight-color: transparent; transition: color .1s, font-size .1s;
+}
+.tp-item.sel { color: var(--tag-text); font-size: 22px; font-weight: 600; }
+.tp-item.dis { color: #CCC5B8; text-decoration: line-through; text-decoration-color: #E2DCD0; cursor: default; }
+.tp-done {
+  width: 100%; margin-top: 14px; font: inherit; font-size: 15px; font-weight: 600; color: var(--bg);
+  background: var(--text); border: 0; border-radius: 999px; padding: 11px; cursor: pointer;
+}
+.tp-done:hover { background: #000; }
+.tp-done:focus-visible { outline: 2px solid var(--detail); outline-offset: 2px; }
 
 /* Responsive */
 @media (max-width: 820px) {
@@ -322,7 +331,6 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
     background: rgba(34, 34, 34, .45); animation: fade .18s ease-out;
   }
   body:has(.datepicker:not([hidden])) { overflow: hidden; }
-  .tp-h { height: 46px; font-size: 16px; }
   /* "Til"-overskriften (20px + 6px) ligger mellem pilen og København-feltet; ryk pilen 13px ned,
      så der er lige langt til de to felter */
   .route { gap: 4px; }
@@ -404,7 +412,7 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
   font-size: 14px; font-weight: 600; line-height: 1.2;
 }
 
-.co2-pill.low  { background: var(--detail-soft); color: var(--tag-text); }
+.co2-pill.low  { background: #E4F4D0; color: #2E5A00; }   /* grøn = lav udledning (bevidst, ikke detaljefarven) */
 .co2-pill.mid  { background: #FBEFC9; color: #7A5A06; }
 .co2-pill.high { background: #F8DCD6; color: #A3301C; }
 .eco summary .co2-pill { margin-right: auto; }
