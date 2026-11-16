@@ -290,6 +290,9 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
   mask-image: linear-gradient(to bottom, transparent, #000 32%, #000 68%, transparent);
 }
 .tp-wheel::-webkit-scrollbar { display: none; }
+.tp-wheel.dragging { scroll-snap-type: none; cursor: grabbing; }
+.tp-wheel.dragging .tp-item { cursor: grabbing; }
+@media (pointer: fine) { .tp-wheel { cursor: grab; } }
 .tp-pad { height: 80px; }
 .tp-item {
   height: 40px; display: flex; align-items: center; justify-content: center; scroll-snap-align: center;

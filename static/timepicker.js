@@ -25,6 +25,8 @@
   let b = to.value === "23:59" ? 24 : Math.max(a + 1, parseInt(to.value, 10) || 18);
   let wheels = {};          // { a: element, b: element }
   let settleTimer = {};
+  let drag = null;          // igangværende træk med musen
+  let suppressClick = false;
 
   // Timer der er gået, når datoen er i dag (den igangværende time kan stadig vælges)
   function firstHour() {
@@ -137,8 +139,44 @@
         clearTimeout(settleTimer[k]);
         settleTimer[k] = setTimeout(() => settle(k), 120);
       }, { passive: true });
+
+      // Klik-og-træk med mus (telefon kan allerede swipe). Snap slås fra under trækket og til igen bagefter.
+      wheels[k].addEventListener("pointerdown", (e) => {
+        if (e.pointerType !== "mouse" || e.button !== 0) return;
+        e.preventDefault();
+        const w = wheels[k];
+        drag = { k, w, y: e.clientY, top: w.scrollTop, moved: false, lastY: e.clientY, lastT: e.timeStamp, v: 0 };
+        w.classList.add("dragging");
+      });
     }
   }
+
+  window.addEventListener("pointermove", (e) => {
+    if (!drag) return;
+    const dy = e.clientY - drag.y;
+    if (Math.abs(dy) > 3) drag.moved = true;
+    drag.w.scrollTop = drag.top - dy;
+    const dt = e.timeStamp - drag.lastT;
+    if (dt > 0) drag.v = (e.clientY - drag.lastY) / dt;   // px pr. ms, til et lille "kast"
+    drag.lastY = e.clientY; drag.lastT = e.timeStamp;
+  });
+
+  window.addEventListener("pointerup", (e) => {
+    if (!drag) return;
+    const { k, w, moved, lastT } = drag;
+    // Lille "kast": kun hvis musen stadig bevægede sig lige før slip, og højst ca. 1 time ekstra
+    const v = e.timeStamp - lastT < 60 ? Math.max(-1, Math.min(1, drag.v)) : 0;
+    drag = null;
+    if (moved) {
+      suppressClick = true; setTimeout(() => (suppressClick = false), 0);
+      const target = w.scrollTop - v * 40;
+      const h = Math.min(last(k), Math.max(first(k), first(k) + Math.round(target / ITEM)));
+      scrollTo(k, h, true);
+      setTimeout(() => w.classList.remove("dragging"), 400);
+    } else {
+      w.classList.remove("dragging");
+    }
+  });
 
   function open(viaKeyboard) {
     clampToNow();
@@ -161,6 +199,7 @@
   btn.addEventListener("click", (e) => (pop.hidden ? open(e.isTrusted && e.detail === 0) : close()));
 
   pop.addEventListener("click", (e) => {
+    if (suppressClick) return;   // slutningen af et træk er ikke et klik
     const item = e.target.closest(".tp-item");
     const q = e.target.closest("[data-a]");
     const act = e.target.closest("[data-act]")?.dataset.act;
