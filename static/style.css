@@ -77,7 +77,7 @@ input, select {
 }
 input:hover, select:hover { border-color: var(--line); }
 input:focus, select:focus { outline: none; background: var(--card); border-color: var(--text); }
-input::placeholder { color: #BDB6A9; opacity: 1; }
+input::placeholder { color: #D3CDC2; opacity: 1; }
 
 .swap {
   width: 44px; height: 50px; border-radius: 50%; border: 1px solid var(--line);
@@ -312,7 +312,7 @@ input::placeholder { color: #BDB6A9; opacity: 1; }
    Alt herunder påvirker kun smalle skærme. PC-visningen er uændret. */
 
 /* Elementer der kun findes på mobil */
-.m-price, .m-dep, .m-sub, .m-details, .book-btn, .search-summary, .eco-all,
+.m-price, .m-dep, .m-more, .m-chev, .search-summary, .eco-all,
 .co2-pill .short { display: none; }
 
 @media (max-width: 820px) {
@@ -361,19 +361,36 @@ input::placeholder { color: #BDB6A9; opacity: 1; }
   .trip .top, .trip .meta { display: none; }
   .m-price { display: block; font-size: 18px; font-weight: 600; letter-spacing: -.015em; line-height: 1.2; }
   .m-dep { display: block; font-size: 15px; font-weight: 600; margin-top: 2px; }
-  .m-sub { display: block; font-size: 11.5px; line-height: 1.35; color: var(--muted); margin-top: 3px; }
+  /* Lukket kort: kun pris + afgang + lille pil. Tryk folder resten ud. */
+  .trip { position: relative; padding-bottom: 18px; }
+  .m-chev {
+    display: block; position: absolute; left: 50%; bottom: 5px; width: 7px; height: 7px;
+    margin-left: -3.5px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg); opacity: .45; transition: transform .2s ease;
+  }
+  .trip.open .m-chev { transform: rotate(-135deg); bottom: 2px; }
+  .m-more { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .2s ease; }
+  .m-more > div { overflow: hidden; min-height: 0; }
+  .trip.open .m-more { grid-template-rows: 1fr; }
+  .m-sub { font-size: 11.5px; line-height: 1.35; color: var(--muted); margin-top: 6px; }
   .trip.cheapest .m-sub { color: rgba(255, 252, 245, .78); }
-
-  /* Detaljer + Book-knap efter første tryk */
-  .trip.open .m-details { display: grid; gap: 6px; margin-top: 8px; font-size: 11.5px; color: var(--muted); }
-  .trip.cheapest.open .m-details { color: rgba(255, 252, 245, .85); }
+  .m-details { display: grid; gap: 6px; margin-top: 8px; font-size: 11.5px; color: var(--muted); }
+  .trip.cheapest .m-details { color: rgba(255, 252, 245, .85); }
   .m-details .tag { justify-self: start; font-size: 11px; white-space: normal; }
-  .trip.open .book-btn {
-    display: block; text-align: center; margin-top: 2px; padding: 7px 4px;
+  .book-btn {
+    display: block; text-align: center; margin: 2px 0 4px; padding: 7px 4px;
     background: var(--accent); color: var(--on-accent); border-radius: var(--radius-sm);
     font-weight: 600; font-size: 12px;
   }
-  .trip.cheapest.open .book-btn { background: var(--on-dark); color: var(--deep); }
+  .trip.cheapest .book-btn { background: var(--on-dark); color: var(--deep); }
+
+  /* CO2-pillen: lille pil der vender, når den samlede boks er åben */
+  .co2-pill .short::after {
+    content: ""; display: inline-block; width: 5px; height: 5px; margin: 0 0 2px 6px;
+    border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+    transform: rotate(45deg); transition: transform .2s ease; vertical-align: middle;
+  }
+  .eco[open] .co2-pill .short::after { transform: rotate(-135deg); margin-bottom: -1px; }
   .note { padding: 10px; font-size: 12px; }
   .skeleton { height: 76px; }
 
