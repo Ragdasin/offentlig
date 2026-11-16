@@ -385,7 +385,11 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
   .trip:hover { transform: none; }
   .trip .top, .trip .meta { display: none; }
   .m-price { display: block; text-align: center; font-size: 18px; font-weight: 600; letter-spacing: -.015em; line-height: 1.2; }
-  .m-dep { display: block; text-align: center; font-size: 15px; font-weight: 400; margin-top: 2px; }
+  .m-dep { display: block; text-align: center; font-size: 14px; font-weight: 400; margin-top: 2px; letter-spacing: -.01em; }
+  /* Ankomst rykker ned på egen linje, hvis kolonnen er for smal */
+  .m-arr { color: var(--muted); display: inline-block; white-space: nowrap; margin-left: .3em; }
+  .trip.cheapest .m-arr { color: rgba(255, 252, 245, .78); }
+  .m-sub { text-align: center; }
   /* Lukket kort: kun pris + afgang + lille pil. Tryk folder resten ud. */
   .trip { position: relative; padding-bottom: 18px; }
   .m-chev {
@@ -432,4 +436,12 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
     padding: 6px 14px; cursor: pointer; flex-shrink: 0;
   }
   .edit-btn:hover { border-color: var(--text); }
+}
+
+/* Meget smalle telefoner */
+@media (max-width: 360px) {
+  .eco summary .co2-pill { font-size: 10.5px; padding: 4px 3px; }
+  .co2-pill .short::after { margin-left: 3px; }
+  .col h2 { font-size: 12px; }
+  .m-price { font-size: 16px; }
 }

@@ -196,9 +196,9 @@ function renderColumn(provider, list, data) {
           <span>Plads: ${t.seat_price == null ? "vælges ved booking" : "+" + t.seat_price + " kr"}</span>
         </div>
         <div class="m-price">${t.price} kr</div>
-        <div class="m-dep">${t.departure}</div>
+        <div class="m-dep">${t.departure}<span class="m-arr"> → ${t.arrival}</span></div>
         <div class="m-more"><div>
-          <div class="m-sub">→ ${t.arrival} · ${fmtDuration(t.duration_min).replace(" min", "")} · ${t.transfers ? t.transfers + " skift" : "direkte"}</div>
+          <div class="m-sub">${fmtDuration(t.duration_min).replace(" min", "")} · ${t.transfers ? t.transfers + " skift" : "direkte"}</div>
           <div class="m-details">
             <span class="tag">${escapeHtml(t.ticket_type)}</span>
             <span>Plads: ${t.seat_price == null ? "ved booking" : "+" + t.seat_price + " kr"}</span>
