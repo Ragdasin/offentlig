@@ -147,7 +147,8 @@ def _parse(trip_offer, ticket_label):
         "ticket_type": f"{OFFER_NAMES[best['contents']['offerType']]} · {ticket_label}",
         "seat_price": _seat_price(best),
         "transfers": trip.get("changeCount", len(legs) - 1),
-        "url": "https://www.dsb.dk/",
+        # Åbner DSB-appen på telefon (universal link); på computer vises DSB's søgeside.
+        "url": "https://www.dsb.dk/indland/billettype/",
     }
 
 
