@@ -145,7 +145,7 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
 }
 /* Hover på alle afgange: løft, sort ring og blød skygge, så man tydeligt ser, hvad man rammer */
 .trip:hover {
-  background: #FFFDF8; border-color: var(--text); transform: translateY(-3px);
+  background: #EEF4EF; border-color: var(--text); transform: translateY(-3px);
   box-shadow: 0 0 0 1px var(--text), 0 10px 22px rgba(34, 34, 34, .10);
 }
 .trip .top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
