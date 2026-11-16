@@ -123,9 +123,13 @@
         <p class="eco-note">Tryk på en pille igen for at lukke.</p>
       </div>
     </section>
-    <p class="eco-sources" id="ecoSources" hidden>
-      Udledning: CO₂ pr. person på en tur Aarhus → København, inkl. produktion af brændstof og strøm. Kilder: {% for name, url in eco_sources %}{% if url %}<a href="{{ url }}" target="_blank" rel="noopener">{{ name }}</a>{% else %}{{ name }}{% endif %}{{ "; " if not loop.last }}{% endfor %}.
-    </p>
+    <details class="eco-sources" id="ecoSources" hidden>
+      <summary>Om CO₂-tallene</summary>
+      <p>CO₂ pr. person på en tur {{ route }}, inkl. produktion af brændstof og strøm.</p>
+      <ul>
+        {% for name, url in eco_sources %}<li>{% if url %}<a href="{{ url }}" target="_blank" rel="noopener">{{ name }}</a>{% else %}{{ name }}{% endif %}</li>{% endfor %}
+      </ul>
+    </details>
   </main>
 
   <script src="{{ url_for('static', filename='stations.js') }}"></script>

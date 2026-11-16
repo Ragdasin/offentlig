@@ -269,6 +269,17 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
 .eco-note, .eco-own { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
 .eco-own { font-style: italic; }
 .eco-sources { margin: 20px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+.eco-sources summary { cursor: pointer; display: inline-flex; align-items: center; gap: 6px; list-style: none; font-weight: 500; }
+.eco-sources summary::-webkit-details-marker { display: none; }
+.eco-sources summary::after {
+  content: ""; width: 5px; height: 5px; margin-bottom: 2px;
+  border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg); transition: transform .2s ease;
+}
+.eco-sources[open] summary::after { transform: rotate(-135deg); margin-bottom: -2px; }
+.eco-sources summary:hover { color: var(--text); }
+.eco-sources p { margin: 6px 0 4px; }
+.eco-sources ul { margin: 0; padding-left: 16px; }
 .eco-sources a { color: var(--muted); }
 /* Overskrift, udledningsboks og afgange flugter på tværs af kolonnerne */
 @media (min-width: 821px) {
