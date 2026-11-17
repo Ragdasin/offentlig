@@ -164,6 +164,8 @@ input::placeholder { color: #D3CDC2; opacity: 1; }
 .trip .time { font-size: 20px; font-weight: 600; letter-spacing: -.015em; }
 .trip .price { font-size: 20px; font-weight: 600; letter-spacing: -.015em; white-space: nowrap; }
 .trip .meta { color: var(--muted); font-size: 14px; margin-top: 6px; display: flex; flex-wrap: wrap; gap: 4px 10px; }
+/* Billettype og plads altid på linje 2, så alle kort (DSB, FlixBus, Kombardo) får samme opbygning og højde */
+.trip .meta-br { flex-basis: 100%; height: 0; margin-top: -4px; }
 .tag { background: var(--detail-soft); color: var(--tag-text); font-weight: 600; font-size: 12px; padding: 2px 8px; border-radius: var(--radius-sm); }
 
 /* Billigste afgang: farvet kort med creme tekst */

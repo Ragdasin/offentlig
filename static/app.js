@@ -195,6 +195,7 @@ function renderColumn(provider, list, data) {
         <div class="meta">
           <span>${fmtDuration(t.duration_min)}</span>
           <span>${t.transfers ? t.transfers + " skift" : "Direkte"}</span>
+          <span class="meta-br" aria-hidden="true"></span>
           <span class="tag">${escapeHtml(t.ticket_type)}</span>
           <span>Plads: ${t.seat_price == null ? "vælges ved booking" : "+" + t.seat_price + " kr"}</span>
         </div>
